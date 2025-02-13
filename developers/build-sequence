@@ -108,12 +108,6 @@ pancake/parser
 pancake/proofs
 pancake/ta_progs
 
-# dafny compiler
-compiler/dafny
-compiler/dafny/translation
-compiler/dafny/compilation
-compiler/dafny/semantics
-
 # examples and tests
 characteristic/examples
 translator/monadic/examples
