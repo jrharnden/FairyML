@@ -126,13 +126,6 @@ compiler/parsing/tests
 compiler/inference/tests
 compiler/printing/test
 
-# Floating-Point optimizer
-icing/flover
-icing/flover/Infra
-icing/flover/semantics
-icing/
-icing/examples
-
 # compiler translation
 compiler/repl
 
