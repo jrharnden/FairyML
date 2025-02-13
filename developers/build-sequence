@@ -116,7 +116,6 @@ compiler/dafny/semantics
 
 # examples and tests
 characteristic/examples
-tutorial/solutions
 translator/monadic/examples
 
 translator/okasaki-examples

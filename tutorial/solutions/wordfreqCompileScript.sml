@@ -1,1 +1,0 @@
-../wordfreqCompileScript.sml

@@ -1,6 +1,3 @@
-# tutorial is not supposed to build until one solves the exercises
-tutorial
-
 # Broken, see #1104
 compiler/backend/San
 

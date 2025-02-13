@@ -23,7 +23,6 @@ config_enc_str.txt
 # Developer generated executables
 developers/readme_gen
 semantics/addancs
-tutorial/solutions/make_ex
 
 # regression test logs
 regression.log
