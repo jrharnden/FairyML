@@ -1,22 +1,5 @@
 The CakeML compiler backend.
 
-[San](San):
-A case study for the shared memory feature.
-
-[ag32](ag32):
-This directory contains the Silver-specific part of the compiler
-backend and associated proofs.
-
-[arm7](arm7):
-This directory contains the ARMv7-specific part of the compiler backend.
-
-[arm8](arm8):
-This directory contains the ARMv8-specific part of the compiler backend.
-
-[arm8_asl](arm8_asl):
-This directory contains proofs for the ASL-derived ARMv8-specific part of the
-compiler backend.
-
 [backendScript.sml](backendScript.sml):
 Composes all of the compiler phases within the compiler backend into
 a single compile function which is connected (in ../compilerScript.sml)
@@ -230,14 +213,11 @@ This compiler phase removes all Skip instructions (generated from
 Tick in stackLang).
 
 [lab_to_targetScript.sml](lab_to_targetScript.sml):
-This compiler phase generates concrete (ARM, x64, ag32, RISC-V,
-MIPS) machine code from labLang assmebly programs. This phase is the
+This compiler phase generates concrete (x64)
+machine code from labLang assmebly programs. This phase is the
 CakeML compiler's assmebler: it computes label offsets and encodes
 all instructions according to the instruction encoder stored in the
 compiler configuration.
-
-[mips](mips):
-This directory contains the mips-specific part of the compiler backend.
 
 [pattern_matching](pattern_matching):
 The CakeML pattern matching expressions compiler
@@ -256,9 +236,6 @@ different phases of the compiler backend.
 [reg_alloc](reg_alloc):
 This directory contains the implementation of the register allocator
 and parallel-move algorithms.
-
-[riscv](riscv):
-This directory contains the RISC-V-specific part of the compiler backend.
 
 [semantics](semantics):
 This directory contains the definition of the semantics for each

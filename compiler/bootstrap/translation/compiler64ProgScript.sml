@@ -2,7 +2,7 @@
   Finish translation of the 64-bit version of the compiler.
 *)
 open preamble
-     mipsProgTheory compilerTheory
+     x64ProgTheory compilerTheory
      exportTheory
      ml_translatorLib ml_translatorTheory
 open cfLib basis
@@ -11,7 +11,7 @@ val _ = temp_delsimps ["NORMEQ_CONV", "lift_disj_eq", "lift_imp_disj"]
 
 val _ = new_theory"compiler64Prog";
 
-val _ = translation_extends "mipsProg";
+val _ = translation_extends "x64Prog";
 
 val _ = ml_translatorLib.ml_prog_update (ml_progLib.open_module "compiler64Prog");
 val _ = ml_translatorLib.use_string_type true;
@@ -278,39 +278,6 @@ val res = translate export_x64Theory.export_funcs_def;
 val res = translate export_x64Theory.x64_export_def;
 val res = translate
           (x64_configTheory.x64_backend_config_def
-             |> SIMP_RULE(srw_ss())[FUNION_FUPDATE_1]);
-
-(* riscv *)
-val res = translate riscv_configTheory.riscv_names_def;
-val res = translate export_riscvTheory.startup_def;
-val res = translate export_riscvTheory.ffi_asm_def;
-val res = translate export_riscvTheory.export_func_def;
-val res = translate export_riscvTheory.export_funcs_def;
-val res = translate export_riscvTheory.riscv_export_def;
-val res = translate
-          (riscv_configTheory.riscv_backend_config_def
-             |> SIMP_RULE(srw_ss())[FUNION_FUPDATE_1]);
-
-(* mips *)
-val res = translate mips_configTheory.mips_names_def;
-val res = translate export_mipsTheory.startup_def;
-val res = translate export_mipsTheory.ffi_asm_def;
-val res = translate export_mipsTheory.export_func_def;
-val res = translate export_mipsTheory.export_funcs_def;
-val res = translate export_mipsTheory.mips_export_def;
-val res = translate
-          (mips_configTheory.mips_backend_config_def
-             |> SIMP_RULE(srw_ss())[FUNION_FUPDATE_1]);
-
-(* arm8 *)
-val res = translate arm8_configTheory.arm8_names_def;
-val res = translate export_arm8Theory.startup_def;
-val res = translate export_arm8Theory.ffi_asm_def;
-val res = translate export_arm8Theory.export_func_def;
-val res = translate export_arm8Theory.export_funcs_def;
-val res = translate export_arm8Theory.arm8_export_def;
-val res = translate
-          (arm8_configTheory.arm8_backend_config_def
              |> SIMP_RULE(srw_ss())[FUNION_FUPDATE_1]);
 
 (* Leave the module now, so that key things are available in the toplevel

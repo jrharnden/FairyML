@@ -49,19 +49,6 @@ cake_verbose$(SUFF): cake-sexpr-64 basis_ffi.c cake$(SUFF)
 	CML_STACK_SIZE=1000 CML_HEAP_SIZE=6000 $(PREF)cake$(SUFF) --sexp=true --exclude_prelude=true --skip_type_inference=true --emit_empty_ffi=true --reg_alg=0 < $< > $<.S
 	$(CC) $(CFLAGS) -DDEBUG_FFI -o $@ $<.S basis_ffi.c $(LDFLAGS) $(LDLIBS)
 
-# *UNVERIFIED* compiler supporting 32-bit targets; see cake-x64-32.tar.gz for a
-# verified compiler
-
-cake_unverified32$(SUFF): cake-sexpr-32 basis_ffi.c cake$(SUFF)
-	CML_STACK_SIZE=1000 CML_HEAP_SIZE=6000 $(PREF)cake$(SUFF) --sexp=true --exclude_prelude=true --skip_type_inference=true --reg_alg=0 < $< > $<.S
-	$(CC) $(CFLAGS) -o $@ $<.S basis_ffi.c $(LDFLAGS) $(LDLIBS)
-
-# Example of cross-compiling the compiler itself
-RISCV_CC ?= riscv64-unknown-linux-gnu-cc
-cake_riscv_host: cake-sexpr-64 basis_ffi.c cake$(SUFF)
-	CML_STACK_SIZE=1000 CML_HEAP_SIZE=6000 $(PREF)cake$(SUFF) --sexp=true --exclude_prelude=true --skip_type_inference=true --target=riscv --reg_alg=0 < $< > $<.riscv.S
-	$(RISCV_CC) $(CFLAGS) -o $@ $<.riscv.S basis_ffi.c $(LDFLAGS) $(LDLIBS)
-
 # Using the CakeML compiler
 
 # The conventions used here for extensions, namely,
