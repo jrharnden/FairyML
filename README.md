@@ -55,9 +55,6 @@ Translator to cv type used by cv_compute
 This directory contains scripts for automating routine tasks, e.g., for
 generating README.md files.
 
-[examples](examples):
-Examples of verified programs built using CakeML infrastructure.
-
 [how-to.md](how-to.md):
 This document introduces how to use the CakeML compiler, providing in
 particular:

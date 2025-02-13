@@ -1,1 +1,0 @@
-../tutorial/splitwordsScript.sml
