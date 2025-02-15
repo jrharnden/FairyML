@@ -1,3 +1,0 @@
-#use "topfind";;
-#require "batteries";;
-#require "compiler-libs.common";;

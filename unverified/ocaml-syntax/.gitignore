@@ -1,7 +1,0 @@
-*.cmi
-*.cmx
-*.swp
-ocamlToCakeML
-typedOCamlToCakeML
-formatted
-test.ml
