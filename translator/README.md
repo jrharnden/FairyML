@@ -55,9 +55,6 @@ translate.
 Extensions to the proof-producing translator to support
 stateful/imperative (monadic) HOL functions.
 
-[other-examples](other-examples):
-A few other examples of HOL functions that can be translated into CakeML.
-
 [std_preludeScript.sml](std_preludeScript.sml):
 Translations of various useful HOL functions and datatypes, to serve as a
 starting point for further translations.

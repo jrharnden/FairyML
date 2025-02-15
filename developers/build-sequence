@@ -88,9 +88,6 @@ pancake/ta_progs
 # examples and tests
 characteristic/examples
 
-translator/other-examples
-translator/other-examples/auxiliary
-
 compiler/parsing/tests
 compiler/inference/tests
 compiler/printing/test
