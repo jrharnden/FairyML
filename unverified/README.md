@@ -1,10 +1,6 @@
 Various unverified tools, e.g. tools for converting OCaml to CakeML
 and an SML version of the CakeML register allocator.
 
-[hol-light-syntax](hol-light-syntax):
-A work in progress attempt to translate the particular OCaml syntax used by HOL
-Light into Standard ML (as a step towards CakeML).
-
 [lem](lem):
 A parking lot for the old Lem files that were used for defining the semantics
 
