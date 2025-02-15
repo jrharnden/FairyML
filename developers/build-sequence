@@ -95,9 +95,6 @@ compiler/printing/test
 # compiler translation
 compiler/repl
 
-# compiler sexpr bootstrap
-unverified/sexpr-bootstrap/x64/64:cake-unverified-x64-64.tar.gz
-
 # compiler HOL bootstrap
 compiler/bootstrap/compilation/x64/64:cake-x64-64.tar.gz
 compiler/bootstrap/compilation/x64/64/proofs

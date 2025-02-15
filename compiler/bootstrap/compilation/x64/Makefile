@@ -39,16 +39,6 @@ all: cake$(SUFF)
 cake$(SUFF): cake.S basis_ffi.c
 	$(CC) $(CFLAGS) $< basis_ffi.c $(LOADLIBES) $(EVALFLAG) -o $@ $(LDFLAGS) $(LDLIBS)
 
-# Note: While this Makefile is shared the sexpr files used in the example rules
-# below are only included in the verified cake-x64-64.tar.gz release package
-
-# *UNVERIFIED* build with GC and stage tracing; regenerating the .S will take
-# about five minutes
-
-cake_verbose$(SUFF): cake-sexpr-64 basis_ffi.c cake$(SUFF)
-	CML_STACK_SIZE=1000 CML_HEAP_SIZE=6000 $(PREF)cake$(SUFF) --sexp=true --exclude_prelude=true --skip_type_inference=true --emit_empty_ffi=true --reg_alg=0 < $< > $<.S
-	$(CC) $(CFLAGS) -DDEBUG_FFI -o $@ $<.S basis_ffi.c $(LDFLAGS) $(LDLIBS)
-
 # Using the CakeML compiler
 
 # The conventions used here for extensions, namely,
