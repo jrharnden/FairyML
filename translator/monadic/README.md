@@ -9,10 +9,6 @@ judgements used by the monadic translator.
 Proves a connection between the monadic translator's ArrowP
 judgement and CF's app judgement.
 
-[examples](examples):
-This directory contains example applications of the monadic translator.
-These examples serve as test cases of the monadic translator.
-
 [ml_monadStoreLib.sml](ml_monadStoreLib.sml):
 Automation that derives lemmas about arrays and references for use
 by the monadic translator.

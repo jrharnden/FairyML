@@ -87,7 +87,6 @@ pancake/ta_progs
 
 # examples and tests
 characteristic/examples
-translator/monadic/examples
 
 translator/okasaki-examples
 translator/other-examples
