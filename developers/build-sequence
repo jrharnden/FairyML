@@ -86,8 +86,6 @@ pancake/proofs
 pancake/ta_progs
 
 # examples and tests
-characteristic/examples
-
 compiler/parsing/tests
 compiler/inference/tests
 compiler/printing/test
