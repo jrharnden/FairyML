@@ -1,9 +1,6 @@
 Various unverified tools, e.g. tools for converting OCaml to CakeML
 and an SML version of the CakeML register allocator.
 
-[lem](lem):
-A parking lot for the old Lem files that were used for defining the semantics
-
 [ocaml-syntax](ocaml-syntax):
 An OCaml to CakeML translator. Attempts to translate type-correct OCaml files
 to equivalent CakeML files. Multi-file programs should be supported eventually,
