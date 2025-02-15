@@ -55,10 +55,6 @@ translate.
 Extensions to the proof-producing translator to support
 stateful/imperative (monadic) HOL functions.
 
-[okasaki-examples](okasaki-examples):
-Examples of using the CakeML translator on functional programs based on the
-algorithms in "Purely Functional Data Structures" by Chris Okasaki (1996).
-
 [other-examples](other-examples):
 A few other examples of HOL functions that can be translated into CakeML.
 
