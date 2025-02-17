@@ -26,12 +26,6 @@ val () = use_long_names := true;
 
 val spec64 = INST_TYPE[alpha|->``:64``]
 
-val res = translate $ spec64 $ panScopeTheory.scope_check_exp_def;
-val res = translate $ spec64 $ panScopeTheory.scope_check_prog_def;
-val res = translate $
-  INST_TYPE[beta|->``:64``] panScopeTheory.scope_check_funs_def;
-val res = translate $ INST_TYPE[beta|->``:64``] panScopeTheory.scope_check_def;
-
 Definition max_heap_limit_64_def:
                                   max_heap_limit_64 c =
 ^(spec64 data_to_wordTheory.max_heap_limit_def
@@ -116,41 +110,11 @@ val _ = r |> hyp |> null orelse
         failwith ("Unproved side condition in the translation of " ^
                   "backend_passesTheory.compile_tap_def.");
 
-val r = pan_passesTheory.pan_to_target_all_def |> spec64
-          |> REWRITE_RULE [NULL_EQ] |> translate;
-
-val r = pan_passesTheory.opsize_to_display_def |> translate;
-val r = pan_passesTheory.shape_to_str_def |> translate;
-val r = pan_passesTheory.insert_es_def |> translate;
 Triviality lem:
   dimindex(:64) = 64
 Proof
   EVAL_TAC
 QED
-val r = pan_passesTheory.pan_exp_to_display_def |> spec64 |> SIMP_RULE std_ss [byteTheory.bytes_in_word_def,lem] |> translate;
-val r = pan_passesTheory.crep_exp_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.loop_exp_to_display_def |> spec64 |> translate;
-
-val r = pan_passesTheory.dest_annot_def |> spec64 |> translate;
-val r = pan_passesTheory.pan_seqs_def |> spec64 |> translate;
-val r = pan_passesTheory.crep_seqs_def |> spec64 |> translate;
-val r = pan_passesTheory.loop_seqs_def |> spec64 |> translate;
-val r = pan_passesTheory.pan_prog_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.crep_prog_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.loop_prog_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.pan_fun_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.crep_fun_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.loop_fun_to_display_def |> spec64 |> translate;
-val r = pan_passesTheory.pan_to_strs_def |> spec64 |> translate;
-val r = pan_passesTheory.crep_to_strs_def |> spec64 |> translate;
-val r = pan_passesTheory.loop_to_strs_def |> spec64 |> translate;
-val r = pan_passesTheory.any_pan_prog_pp_def |> spec64 |> translate;
-
-val r = pan_passesTheory.pan_compile_tap_def |> spec64 |> translate;
-
-val _ = r |> hyp |> null orelse
-        failwith ("Unproved side condition in the translation of " ^
-                  "pan_passesTheory.pan_compile_tap_def.");
 
 (* exportTheory *)
 (* TODO: exportTheory functions that don't depend on the word size
@@ -298,10 +262,6 @@ val res = format_compiler_result_def
 val res = translate backendTheory.ffinames_to_string_list_def;
 
 val res = translate compile_64_def;
-
-val res = translate $ spec64 compile_pancake_def;
-
-val res = translate compile_pancake_64_def;
 
 val res = translate (has_version_flag_def |> SIMP_RULE (srw_ss()) [MEMBER_INTRO])
 val res = translate (has_help_flag_def |> SIMP_RULE (srw_ss()) [MEMBER_INTRO])
@@ -508,8 +468,6 @@ End
 val _ = (next_ml_names := ["compiler_has_repl_flag"]);
 val res = translate (has_repl_flag_def |> REWRITE_RULE [MEMBER_INTRO]);
 
-val res = translate (has_pancake_flag_def |> SIMP_RULE (srw_ss()) [MEMBER_INTRO])
-
 val main = process_topdecs`
 fun main u =
 let
@@ -521,10 +479,6 @@ in
     print compiler_help_string
   else if compiler_has_version_flag cl then
     print compiler_current_build_info_str
-  else if compiler_has_pancake_flag cl then
-    case compiler_compile_pancake_64 cl (TextIO.inputAll TextIO.stdIn)  of
-      (c, e) => (print_app_list c; TextIO.output TextIO.stdErr e;
-                 compiler64prog_nonzero_exit_code_for_error_msg e)
   else
     case compiler_compile_64 cl (TextIO.inputAll TextIO.stdIn)  of
       (c, e) => (print_app_list c; TextIO.output TextIO.stdErr e;
@@ -597,36 +551,12 @@ Proof
   \\ CONV_TAC SWAP_EXISTS_CONV
   \\ qexists_tac`fs`
   \\ xsimpl)
-  >> xlet_auto>-xsimpl
-  >> xif
-  >- (
-  xlet_auto >- (xsimpl \\ fs[INSTREAM_stdin, STD_streams_get_mode])
-  \\ fs [GSYM HOL_STRING_TYPE_def]
-  \\ xlet_auto >- xsimpl
-  \\ fs [full_compile_64_def]
-  \\ pairarg_tac
-  \\ fs[ml_translatorTheory.PAIR_TYPE_def]
-  \\ gvs[CaseEq "bool"]
-  \\ xmatch
-  \\ xlet_auto >- xsimpl
-
-  \\ qmatch_goalsub_abbrev_tac `STDIO fs'`
-  \\ xlet `POSTv uv. &UNIT_TYPE () uv * STDIO (add_stderr fs' err) *
-     COMMANDLINE cl`
-  THEN1
-   (xapp_spec output_stderr_spec \\ xsimpl
-    \\ qexists_tac `COMMANDLINE cl`
-    \\ asm_exists_tac \\ xsimpl
-    \\ qexists_tac `fs'` \\ xsimpl)
-  \\ xapp
-  \\ asm_exists_tac \\ simp [] \\ xsimpl)
   \\ xlet_auto >- (xsimpl \\ fs[INSTREAM_stdin, STD_streams_get_mode])
   \\ fs [GSYM HOL_STRING_TYPE_def]
   \\ xlet_auto >- xsimpl
   \\ fs [full_compile_64_def]
   \\ pairarg_tac
   \\ fs[ml_translatorTheory.PAIR_TYPE_def]
-  \\ gvs[CaseEq "bool"]
   \\ xmatch
   \\ xlet_auto >- xsimpl
   \\ qmatch_goalsub_abbrev_tac `STDIO fs'`

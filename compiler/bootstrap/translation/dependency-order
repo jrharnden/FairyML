@@ -19,8 +19,6 @@ lexer
 parser
 caml_lexer
 caml_parser
-pancake_lex
-pancake_parse
 reg_alloc
 infer
 explorer
@@ -30,6 +28,5 @@ basis_def
 printing
 to_word64
 to_target64
-from_pancake64
 x64
 compiler64

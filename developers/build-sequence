@@ -78,13 +78,6 @@ candle/overloading/ml_checker
 candle/prover
 candle/prover/compute
 
-# pancake
-pancake
-pancake/semantics
-pancake/parser
-pancake/proofs
-pancake/ta_progs
-
 # examples and tests
 compiler/parsing/tests
 compiler/inference/tests

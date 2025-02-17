@@ -13,7 +13,6 @@ open preamble
      fromSexpTheory simpleSexpParseTheory
 
 open x64_configTheory export_x64Theory
-open panPtreeConversionTheory pan_to_targetTheory panScopeTheory pan_passesTheory
 
 val _ = new_theory"compiler";
 
@@ -77,8 +76,6 @@ OPTIONS:
                 the type inferencer is skipped.
 
   --explore     outputs intermediate forms of the compiled program
-
-  --pancake     takes a pancake program as input
 
   --main_return=B   here B can be either true or false; the default is
                 false; setting this to true causes the main function to
@@ -270,25 +267,6 @@ Definition compile_def:
           case backend_passes$compile_tap c.backend_config full_prog of
           | (NONE, td) => (Failure AssembleError, td)
           | (SOME (bytes,data,c), td) => (Success (bytes,data,c), td)
-End
-
-Definition compile_pancake_def:
-  compile_pancake c input =
-  let _ = empty_ffi (strlit "finished: start up") in
-  case panPtreeConversion$parse_funs_to_ast input of
-  | INR errs =>
-    ((Failure $ ParseError $ concat $
-       MAP (λ(msg,loc). concat [msg; strlit " at ";
-                                locs_to_string (implode input) (SOME loc); strlit "\n"])
-           errs), Nil)
-  | INL funs =>
-      case scope_check funs of
-      | SOME (x, fname) => (Failure (ScopeError x fname),Nil)
-      | NONE =>
-          let _ = empty_ffi (strlit "finished: lexing and parsing") in
-          case pan_passes$pan_compile_tap c funs of
-          | (NONE,td) => (Failure AssembleError,td)
-          | (SOME (bytes,data,c),td) => (Success (bytes,data,c),td)
 End
 
 (* The top-level compiler *)
@@ -631,11 +609,6 @@ Definition has_help_flag_def:
   has_help_flag ls = MEM (strlit"--help") ls
 End
 
-(* Check for pancake flag *)
-Definition has_pancake_flag_def:
-  has_pancake_flag ls = MEM (strlit"--pancake") ls
-End
-
 Definition format_compiler_result_def:
   format_compiler_result bytes_export (Failure err) =
     (List[]:mlstring app_list, error_to_str err) ∧
@@ -686,32 +659,6 @@ Definition compile_64_def:
     (List[], error_to_str (ConfigError (concat [get_err_str confexp;get_err_str topconf])))
 End
 
-Definition compile_pancake_64_def:
-  compile_pancake_64 cl input =
-  let confexp = parse_target_64 cl in
-  case confexp of
-  | INR err => (List[], error_to_str (ConfigError err))
-  | INL (conf, export) =>
-      let topconf = parse_top_config cl in
-      case (topconf) of
-      | INR err => (List[], error_to_str (ConfigError err))
-      | INL (sexp,prelude,typeinfer,onlyprinttypes,sexpprint,mainret) =>
-          let ext_conf = extend_conf cl conf in
-          case ext_conf of
-          | INR err =>
-              (List[], error_to_str (ConfigError (get_err_str ext_conf)))
-          | INL ext_conf =>
-              case compiler$compile_pancake ext_conf input of
-              | (Failure err, td) =>
-                  (List[], error_to_str err)
-              | (Success (bytes, data, c), td) =>
-                  (add_tap_output td
-                    (export (ffinames_to_string_list $
-                      the [] c.lab_conf.ffi_names) bytes data c.symbols
-                      c.exported mainret T),
-                   implode "")
-End
-
 Definition full_compile_64_def:
   full_compile_64 cl inp fs =
   if has_help_flag cl then
@@ -719,12 +666,7 @@ Definition full_compile_64_def:
   else if has_version_flag cl then
     add_stdout fs current_build_info_str
   else
-    let (out, err) =
-        if has_pancake_flag cl then
-          compile_pancake_64 cl inp
-        else
-          compile_64 cl inp
-    in
+    let (out, err) = compile_64 cl inp in
       add_stderr (add_stdout (fastForwardFD fs 0) (concat (append out))) err
 End
 
