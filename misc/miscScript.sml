@@ -151,15 +151,6 @@ Proof
   \\ metis_tac[SUBSET_EQ_CARD,IMAGE_FINITE]
 QED
 
-(* never used *)
-Theorem CARD_IMAGE_EQ_BIJ:
-   ∀s. FINITE s ⇒ CARD (IMAGE f s) = CARD s ⇒ BIJ f s (IMAGE f s)
-Proof
-  rw[]
-  \\ `SURJ f s (IMAGE f s)` suffices_by metis_tac[FINITE_SURJ_BIJ]
-  \\ rw[IMAGE_SURJ]
-QED
-
 (* used only in clos_callProof -
    HOL has DISJOINT_IMAGE:
      |- (!x y. f x = f y <=> x = y) ==>
@@ -650,11 +641,6 @@ Theorem FOLDR_MAX_0_list_max:
 Proof
   Induct \\ rw[list_max_def] \\ rw[MAX_DEF]
 QED
-
-(* never used *)
-Definition list_inter_def:
-  list_inter xs ys = FILTER (\y. MEM y xs) ys
-End
 
 Definition max3_def:
   max3 (x:num) y z = if x > y then (if z > x then z else x)
@@ -1362,29 +1348,6 @@ Proof
   metis_tac[PERM_TRANS]
 QED
 
-(* never used *)
-Theorem RTC_invariant:
-   !R P. (!x y. P x /\ R x y ==> P y) ==> !x y. RTC R x y ==> P x ==> RTC (R RINTER (\x y. P x /\ P y)) x y
-Proof
-  rpt gen_tac >> strip_tac >>
-  ho_match_mp_tac RTC_INDUCT >>
-  srw_tac[][] >> res_tac >> full_simp_tac(srw_ss())[] >>
-  simp[Once RTC_CASES1] >>
-  disj2_tac >>
-  HINT_EXISTS_TAC >>
-  simp[RINTER]
-QED
-
-(* never used *)
-Theorem RTC_RSUBSET:
-   !R1 R2. R1 RSUBSET R2 ==> (RTC R1) RSUBSET (RTC R2)
-Proof
-  simp[RSUBSET] >> rpt gen_tac >> strip_tac >>
-  ho_match_mp_tac RTC_INDUCT >>
-  simp[] >>
-  metis_tac[RTC_CASES1]
-QED
-
 Theorem PERM_PART:
    ∀P L l1 l2 p q. ((p,q) = PART P L l1 l2) ⇒ PERM (L ++ (l1 ++ l2)) (p++q)
 Proof
@@ -1446,18 +1409,6 @@ Proof
   Induct THEN SRW_TAC[][]
 QED
 
-(* never used *)
-Theorem FOLDL_invariant_rest:
-   ∀P f ls a. P ls a ∧ (∀x n. n < LENGTH ls ∧ P (DROP n ls) x ⇒ P (DROP (SUC n) ls) (f x (EL n ls))) ⇒ P [] (FOLDL f a ls)
-Proof
-  ntac 2 gen_tac >>
-  Induct >> srw_tac[][] >>
-  first_x_assum match_mp_tac >>
-  conj_tac >- (
-    first_x_assum (qspecl_then[`a`,`0`] mp_tac) >> srw_tac[][] ) >>
-  srw_tac[][] >> first_x_assum (qspecl_then[`x`,`SUC n`] mp_tac) >> srw_tac[][]
-QED
-
 Definition between_def:
   between x y z ⇔ x:num ≤ z ∧ z < y
 End
@@ -1468,94 +1419,11 @@ Proof
   rw[IN_DEF] \\ EVAL_TAC
 QED
 
-(* never used *)
-Theorem SUC_LEAST:
-   !x. P x ==> (SUC ($LEAST P) = LEAST x. 0 < x /\ P (PRE x))
-Proof
-  GEN_TAC THEN STRIP_TAC THEN
-  numLib.LEAST_ELIM_TAC THEN
-  STRIP_TAC THEN1 PROVE_TAC[] THEN
-  numLib.LEAST_ELIM_TAC THEN
-  STRIP_TAC THEN1 (
-    Q.EXISTS_TAC `SUC x` THEN
-    SRW_TAC[][] ) THEN
-  Q.X_GEN_TAC`nn` THEN
-  STRIP_TAC THEN
-  Q.X_GEN_TAC`m` THEN
-  `?n. nn = SUC n` by ( Cases_on `nn` THEN SRW_TAC[][] THEN DECIDE_TAC ) THEN
-  SRW_TAC[][] THEN
-  FULL_SIMP_TAC(srw_ss())[] THEN
-  `~(n < m)` by PROVE_TAC[] THEN
-  `~(SUC m < SUC n)` by (
-    SPOSE_NOT_THEN STRIP_ASSUME_TAC THEN
-    RES_TAC THEN
-    FULL_SIMP_TAC(srw_ss())[] ) THEN
-  DECIDE_TAC
-QED
-
-(* never used *)
-Definition fmap_linv_def:
-  fmap_linv f1 f2 ⇔ (FDOM f2 = FRANGE f1) /\ (!x. x IN FDOM f1 ==> (FLOOKUP f2 (FAPPLY f1 x) = SOME x))
-End
-
-(* never used *)
-Theorem fmap_linv_unique:
-   !f f1 f2. fmap_linv f f1 /\ fmap_linv f f2 ==> (f1 = f2)
-Proof
-  SRW_TAC[][fmap_linv_def,GSYM fmap_EQ_THM] THEN
-  FULL_SIMP_TAC(srw_ss())[FRANGE_DEF,FLOOKUP_DEF] THEN
-  PROVE_TAC[]
-QED
-
-(* never used *)
-Theorem INJ_has_fmap_linv:
-   INJ (FAPPLY f) (FDOM f) (FRANGE f) ==> ?g. fmap_linv f g
-Proof
-  STRIP_TAC THEN
-  Q.EXISTS_TAC `FUN_FMAP (\x. @y. FLOOKUP f y = SOME x) (FRANGE f)` THEN
-  SRW_TAC[][fmap_linv_def,FLOOKUP_FUN_FMAP,FRANGE_DEF] THEN1 PROVE_TAC[] THEN
-  SELECT_ELIM_TAC THEN
-  FULL_SIMP_TAC (srw_ss()) [INJ_DEF,FRANGE_DEF,FLOOKUP_DEF]
-QED
-
-(* never used *)
-Theorem has_fmap_linv_inj:
-   (?g. fmap_linv f g) = (INJ (FAPPLY f) (FDOM f) (FRANGE f))
-Proof
-  Tactical.REVERSE EQ_TAC THEN1 PROVE_TAC[INJ_has_fmap_linv] THEN
-  SRW_TAC[][fmap_linv_def,INJ_DEF,EQ_IMP_THM]
-  THEN1 ( SRW_TAC[][FRANGE_DEF] THEN PROVE_TAC[] )
-  THEN1 ( FULL_SIMP_TAC(srw_ss())[FLOOKUP_DEF] THEN PROVE_TAC[] )
-QED
-
-(* never used *)
-Theorem fmap_linv_FAPPLY:
-   fmap_linv f g /\ x IN FDOM f ==> (g ' (f ' x) = x)
-Proof
-  SRW_TAC[][fmap_linv_def,FLOOKUP_DEF]
-QED
-
 (* TODO - candidate for move to HOL *)
 Theorem plus_compose:
    !n:num m. $+ n o $+ m = $+ (n + m)
 Proof
   SRW_TAC[ARITH_ss][FUN_EQ_THM]
-QED
-
-(* TODO: move elsewhere? export as rewrite? *)
-(* never used *)
-Theorem IN_option_rwt:
- (x ∈ case opt of NONE => {} | SOME y => Q y) ⇔
-  (∃y. (opt = SOME y) ∧ x ∈ Q y)
-Proof
-Cases_on `opt` >> srw_tac[][EQ_IMP_THM]
-QED
-
-(* never used *)
-Theorem IN_option_rwt2:
- x ∈ option_CASE opt {} s ⇔ ∃y. (opt = SOME y) ∧ x ∈ s y
-Proof
-Cases_on `opt` >> srw_tac[][]
 QED
 
 (* Re-expressing folds *)
@@ -1571,50 +1439,10 @@ PairCases_on `p` THEN
 SRW_TAC[][]
 QED
 
-(* never used *)
-Theorem FOLDR_CONS_5tup:
- !f ls a. FOLDR (\(c,d,x,y,z) w. f c d x y z :: w) a ls = (MAP (\(c,d,x,y,z). f c d x y z) ls)++a
-Proof
-GEN_TAC THEN
-Induct THEN1 SRW_TAC[][] THEN
-Q.X_GEN_TAC `p` THEN
-PairCases_on `p` THEN
-SRW_TAC[][]
-QED
-
-(* never used *)
-Theorem FOLDR_transitive_property:
- !P ls f a. P [] a /\ (!n a. n < LENGTH ls /\ P (DROP (SUC n) ls) a ==> P (DROP n ls) (f (EL n ls) a)) ==> P ls (FOLDR f a ls)
-Proof
-GEN_TAC THEN Induct THEN SRW_TAC[][] THEN
-`P ls (FOLDR f a ls)` by (
-  FIRST_X_ASSUM MATCH_MP_TAC THEN
-  SRW_TAC[][] THEN
-  Q.MATCH_ASSUM_RENAME_TAC `P (DROP (SUC n) ls) b` THEN
-  FIRST_X_ASSUM (Q.SPECL_THEN [`SUC n`,`b`] MP_TAC) THEN
-  SRW_TAC[][] ) THEN
-FIRST_X_ASSUM (Q.SPEC_THEN `0` MP_TAC) THEN
-SRW_TAC[][]
-QED
-
 (* Re-expressing curried lambdas *)
 
 Theorem FST_triple:
  (λ(n,ns,b). n) = FST
-Proof
-srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
-QED
-
-(* never used *)
-Theorem FST_5tup:
- (λ(n,ns,b,x,y). n) = FST
-Proof
-srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
-QED
-
-(* never used *)
-Theorem SND_triple:
- (λ(n,ns,b). f ns b) = UNCURRY f o SND
 Proof
 srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
 QED
@@ -1625,35 +1453,6 @@ Proof
 srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
 QED
 
-(* never used *)
-Theorem SND_pair:
- (λ(n,v). v) = SND
-Proof
-srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
-QED
-
-(* never used *)
-Theorem SND_FST_pair:
- (λ((n,m),c).m) = SND o FST
-Proof
-srw_tac[][FUN_EQ_THM,pairTheory.UNCURRY]
-QED
-
-(* never used *)
-Theorem MAP_ZIP_SND_triple:
- (LENGTH l1 = LENGTH l2) ⇒ (MAP (λ(x,y,z). f y z) (ZIP(l1,l2)) = MAP (UNCURRY f) l2)
-Proof
-strip_tac >> (
-MAP_ZIP
-|> Q.GEN`g`
-|> Q.ISPEC `UNCURRY (f:'b->'c->'d)`
-|> SIMP_RULE(srw_ss())[combinTheory.o_DEF,pairTheory.LAMBDA_PROD]
-|> UNDISCH_ALL
-|> CONJUNCTS
-|> Lib.el 4
-|> MATCH_ACCEPT_TAC)
-QED
-
 (* Specialisations to identity function *)
 
 Theorem I_PERMUTES[simp]:
@@ -1661,14 +1460,6 @@ Theorem I_PERMUTES[simp]:
 Proof
 rw[BIJ_DEF, INJ_DEF, SURJ_DEF]
 QED
-
-(* never used *)
-Theorem INJ_I:
- ∀s t. INJ I s t ⇔ s ⊆ t
-Proof
-SRW_TAC[][INJ_DEF,SUBSET_DEF]
-QED
-
 
 Theorem MAP_EQ_ID:
  !f ls. (MAP f ls = ls) = (!x. MEM x ls ==> (f x = x))
@@ -1709,26 +1500,6 @@ srw_tac[][] >>
 PairCases_on `h` >>
 full_simp_tac(srw_ss())[]
 QED
-
-(* use INJ_MAP_EQ_IFF and INJ_DEF *)
-Theorem map_some_eq:
- !l1 l2. (MAP SOME l1 = MAP SOME l2) ⇔ (l1 = l2)
-Proof
- Induct_on `l1` >>
- srw_tac[][] >>
- Cases_on `l2` >>
- srw_tac[][]
-QED
-
-(* never used *)
-Theorem map_some_eq_append:
- !l1 l2 l3. (MAP SOME l1 ++ MAP SOME l2 = MAP SOME l3) ⇔ (l1 ++ l2 = l3)
-Proof
-metis_tac [map_some_eq, MAP_APPEND]
-QED
-
-val _ = augment_srw_ss [rewrites [map_some_eq,map_some_eq_append]];
-
 
 (* list misc *)
 
