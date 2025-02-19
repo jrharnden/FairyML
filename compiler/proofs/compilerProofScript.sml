@@ -19,11 +19,9 @@ Definition config_ok_def:
   config_ok (cc:α compiler$config) mc ⇔
     env_rel prim_tenv cc.inferencer_config ∧
     inf_set_tids_ienv prim_type_ids cc.inferencer_config ∧ (* TODO: ok? *)
-    ¬cc.input_is_sexp ∧
     ¬cc.exclude_prelude ∧
     ¬cc.skip_type_inference ∧
     ¬cc.only_print_types ∧
-    ¬cc.only_print_sexp ∧
     backend_config_ok cc.backend_config ∧
     mc_conf_ok mc ∧ mc_init_ok cc.backend_config mc
 End
@@ -40,11 +38,9 @@ Definition initial_condition_def:
     set_tids_tenv (count start_type_id) st.tenv ∧
     inf_set_tids_ienv (count start_type_id) cc.inferencer_config ∧
     (* -- *)
-    ¬cc.input_is_sexp ∧
     ¬cc.exclude_prelude ∧
     ¬cc.skip_type_inference ∧
     ¬cc.only_print_types ∧
-    ¬cc.only_print_sexp ∧
     backend_config_ok cc.backend_config ∧
     mc_conf_ok mc ∧ mc_init_ok cc.backend_config mc
 End

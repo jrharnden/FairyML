@@ -10,7 +10,6 @@ open preamble
      inferTheory
      backendTheory backend_passesTheory
      mlintTheory mlstringTheory basisProgTheory
-     fromSexpTheory simpleSexpParseTheory
 
 open x64_configTheory export_x64Theory
 
@@ -57,14 +56,6 @@ OPTIONS:
 
   --target=T    specifies that compilation should produce code for target
                 T, where T can be x64 for the 64-bit compiler;
-
-  --sexp=B      B can be either true or false; here false means that the
-                input will be parsed as normal CakeML concrete syntax;
-                true means that the input is parsed as an s-expression.
-
-  --print_sexp  causes the cake to print the given program in
-                s-expression format; with this option, the compiler
-                does not generate machine code.
 
   --exclude_prelude=B   here B can be either true or false; the default
                 is false; setting this to true causes the compiler not
@@ -143,11 +134,9 @@ Datatype:
   config =
     <| inferencer_config : inf_env
      ; backend_config : α backend$config
-     ; input_is_sexp       : bool
      ; exclude_prelude     : bool
      ; skip_type_inference : bool
      ; only_print_types    : bool
-     ; only_print_sexp     : bool
      |>
 End
 
@@ -218,16 +207,6 @@ End
 (* this is a rather annoying feature of peg_exec requiring locs... *)
 Overload add_locs = ``MAP (λc. (c,unknown_loc))``
 
-Definition parse_sexp_input_def:
-  parse_sexp_input input =
-    let err = strlit "Parsing of sexp syntax failed" in
-      case parse_sexp (add_locs input) of
-      | NONE => INL err
-      | SOME x => case sexplist sexpdec x of
-                  | NONE => INL err
-                  | SOME x => INR x
-End
-
 Definition parse_cml_input_def:
   parse_cml_input input =
     case parse_prog (lexer_fun input) of
@@ -239,9 +218,7 @@ Definition compile_def:
   compile c prelude input =
     let _ = empty_ffi (strlit "finished: start up") in
     case
-      if c.input_is_sexp
-      then parse_sexp_input input
-      else parse_cml_input input
+      parse_cml_input input
     of
     | INL msg => (Failure (ParseError msg), Nil)
     | INR prog =>
@@ -261,8 +238,6 @@ Definition compile_def:
             (Failure (TypeError (concat ([strlit "\n"] ++
                                          inf_env_to_types_string ic ++
                                          [strlit "\n"]))), Nil)
-          else if c.only_print_sexp then
-            (Failure (TypeError (implode(print_sexp (listsexp (MAP decsexp full_prog))))),Nil)
           else
           case backend_passes$compile_tap c.backend_config full_prog of
           | (NONE, td) => (Failure AssembleError, td)
@@ -583,17 +558,14 @@ End
 
 Definition parse_top_config_def:
   parse_top_config ls =
-  let sexp = find_bool (strlit"--sexp=") ls F in
   let prelude = find_bool (strlit"--exclude_prelude=") ls F in
   let typeinference = find_bool (strlit"--skip_type_inference=") ls F in
-  let sexpprint = MEMBER (strlit"--print_sexp") ls in
   let onlyprinttypes = MEMBER (strlit"--types") ls in
   let mainreturn = find_bool (strlit"--main_return=") ls F in
-  case (sexp,prelude,typeinference,mainreturn) of
-    (INL sexp,INL prelude,INL typeinference,INL mainreturn) =>
-      INL (sexp,prelude,typeinference,onlyprinttypes,sexpprint,mainreturn)
+  case (prelude,typeinference,mainreturn) of
+    (INL prelude,INL typeinference,INL mainreturn) =>
+      INL (prelude,typeinference,onlyprinttypes,mainreturn)
   | _ => INR (concat [
-               get_err_str sexp;
                get_err_str prelude;
                get_err_str typeinference;
                get_err_str mainreturn])
@@ -632,18 +604,16 @@ Definition compile_64_def:
   let confexp = parse_target_64 cl in
   let topconf = parse_top_config cl in
   case (confexp,topconf) of
-    (INL (conf,export), INL(sexp,prelude,typeinfer,onlyprinttypes,sexpprint,mainret)) =>
+    (INL (conf,export), INL(prelude,typeinfer,onlyprinttypes,mainret)) =>
     (let ext_conf = extend_conf cl conf in
     case ext_conf of
       INL ext_conf =>
         let compiler_conf =
           <| inferencer_config   := init_config;
              backend_config      := ext_conf;
-             input_is_sexp       := sexp;
              exclude_prelude     := prelude;
              skip_type_inference := typeinfer;
              only_print_types    := onlyprinttypes;
-             only_print_sexp     := sexpprint;
              |> in
         (case compiler$compile compiler_conf basis input of
           (Success (bytes,data,c), td) =>

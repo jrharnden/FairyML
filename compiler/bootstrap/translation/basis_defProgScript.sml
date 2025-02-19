@@ -3,11 +3,11 @@
 *)
 
 open preamble ml_translatorLib ml_translatorTheory;
-open sexp_parserProgTheory basis;
+open basis;
 
 val _ = new_theory "basis_defProg";
 
-val _ = translation_extends "sexp_parserProg";
+val _ = translation_extends "decodeProg";
 val _ = ml_translatorLib.use_string_type true;
 val _ = ml_translatorLib.use_sub_check true;
 

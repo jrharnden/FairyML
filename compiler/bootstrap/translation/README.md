@@ -37,9 +37,6 @@ Translate the pretty printing functions for the REPL
 [reg_allocProgScript.sml](reg_allocProgScript.sml):
 Translate the compiler's register allocator.
 
-[sexp_parserProgScript.sml](sexp_parserProgScript.sml):
-Translate the alternative s-expression parser.
-
 [to_bviProgScript.sml](to_bviProgScript.sml):
 Translate the backend phase from BVL to BVI.
 
