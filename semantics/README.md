@@ -7,11 +7,6 @@ The directory includes definitions of:
  - the semantics of FFI calls, and,
  - the type system.
 
-[alt_semantics](alt_semantics):
-Alternative definitions of the semantics:
-  - using inductive relations (as opposed to functional big-step style), and,
-  - as a small-step relation.
-
 [astPP.sml](astPP.sml):
 Pretty printing for CakeML AST
 
