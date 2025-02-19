@@ -59,25 +59,6 @@ compiler/backend/x64/proofs
 compiler/backend/cv_compute
 cv_translator
 
-# candle
-candle
-candle/set-theory
-candle/syntax-lib
-candle/standard
-candle/standard/syntax
-candle/standard/semantics
-candle/standard/monadic
-candle/standard/ml_kernel
-candle/standard/ml_kernel/lisp
-candle/overloading
-candle/overloading/syntax
-candle/overloading/semantics
-candle/overloading/monadic
-candle/overloading/ml_kernel
-candle/overloading/ml_checker
-candle/prover
-candle/prover/compute
-
 # examples and tests
 compiler/parsing/tests
 compiler/inference/tests

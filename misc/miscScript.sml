@@ -928,62 +928,6 @@ Proof
   metis_tac[]
 QED
 
-(* used only twice, both times in candle/set-theory *)
-Theorem C_BIT_11:
-   ∀n m. (∀z. (z ≤ LOG2 (MAX n m)) ⇒ (BIT z n ⇔ BIT z m)) ⇔ (n = m)
-Proof
-  simp_tac std_ss [Once EQ_IMP_THM] >>
-  ho_match_mp_tac binary_induct >>
-  simp_tac std_ss [] >>
-  conj_tac >- (
-    Cases >> simp_tac arith_ss [] >>
-    qexists_tac`LOG2 (SUC n)` >>
-    simp_tac arith_ss [BIT_LOG2,BIT_ZERO] ) >>
-  gen_tac >> strip_tac >>
-  simp_tac std_ss [BIT_TIMES2,BIT_TIMES2_1] >>
-  srw_tac[][] >- (
-    Cases_on`n=0`>>full_simp_tac std_ss []>-(
-      Cases_on`m=0`>>full_simp_tac std_ss []>>
-      first_x_assum(qspec_then`LOG2 m`mp_tac)>>simp_tac std_ss [BIT_ZERO] >>
-      full_simp_tac std_ss [BIT_LOG2]) >>
-    `¬ODD m` by (
-      simp_tac std_ss [SYM BIT0_ODD] >>
-      first_x_assum(qspec_then`0`mp_tac) >>
-      simp_tac std_ss [] ) >>
-    full_simp_tac std_ss [arithmeticTheory.ODD_EVEN] >>
-    full_simp_tac std_ss [arithmeticTheory.EVEN_EXISTS] >>
-    simp_tac std_ss [arithmeticTheory.EQ_MULT_LCANCEL] >>
-    first_x_assum MATCH_MP_TAC >>
-    srw_tac[][] >>
-    first_x_assum(qspec_then`SUC z`mp_tac) >>
-    impl_tac >- (
-      full_simp_tac std_ss [arithmeticTheory.MAX_DEF] >>
-      srw_tac[][] >> full_simp_tac arith_ss [LOG2_TIMES2] ) >>
-    simp_tac std_ss [BIT_TIMES2] ) >>
-  Cases_on`n=0`>>full_simp_tac std_ss []>-(
-    full_simp_tac std_ss [BIT_ZERO] >>
-    Cases_on`m=0`>>full_simp_tac std_ss [BIT_ZERO] >>
-    Cases_on`m=1`>>full_simp_tac std_ss []>>
-    first_x_assum(qspec_then`LOG2 m`mp_tac) >>
-    full_simp_tac std_ss [arithmeticTheory.MAX_DEF,BIT_LOG2] >>
-    spose_not_then strip_assume_tac >>
-    qspec_then`m`mp_tac logrootTheory.LOG_MOD >>
-    full_simp_tac arith_ss [GSYM LOG2_def] ) >>
-  `ODD m` by (
-    simp_tac std_ss [SYM BIT0_ODD] >>
-    first_x_assum(qspec_then`0`mp_tac) >>
-    simp_tac std_ss [] ) >>
-  full_simp_tac std_ss [arithmeticTheory.ODD_EXISTS,arithmeticTheory.ADD1] >>
-  simp_tac std_ss [arithmeticTheory.EQ_MULT_LCANCEL] >>
-  first_x_assum MATCH_MP_TAC >>
-  srw_tac[][] >>
-  first_x_assum(qspec_then`SUC z`mp_tac) >>
-  impl_tac >- (
-    full_simp_tac std_ss [arithmeticTheory.MAX_DEF] >>
-    srw_tac[][] >> full_simp_tac arith_ss [LOG2_TIMES2_1,LOG2_TIMES2] ) >>
-  full_simp_tac arith_ss [BIT_TIMES2_1,BIT_TIMES2]
-QED
-
 Theorem BIT_num_from_bin_list_leading:
    ∀l x. EVERY ($> 2) l ∧ LENGTH l ≤ x ⇒ ¬BIT x (num_from_bin_list l)
 Proof

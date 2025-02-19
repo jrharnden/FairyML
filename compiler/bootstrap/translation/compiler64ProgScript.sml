@@ -420,10 +420,7 @@ Definition parse_ocaml_syntax_def:
 End
 
 Definition select_parse_def:
-  select_parse cl =
-  if MEMBER (strlit "--candle") cl
-  then parse_ocaml_syntax
-  else parse_cakeml_syntax
+  select_parse cl = parse_cakeml_syntax
 End
 
 val r = translate parse_cakeml_syntax_def;
@@ -432,7 +429,7 @@ val _ = (next_ml_names := ["select_parse"]);
 val r = translate select_parse_def;
 
 Definition init_next_string_def:
-  init_next_string cl = if MEM (strlit "--candle") cl then "candle" else ""
+  init_next_string cl = ""
 End
 
 val _ = (next_ml_names := ["init_next_string"]);
@@ -462,7 +459,7 @@ in
              end`
 
 Definition has_repl_flag_def:
-  has_repl_flag cl ⇔ MEM (strlit "--repl") cl ∨ MEM (strlit "--candle") cl
+  has_repl_flag cl ⇔ MEM (strlit "--repl") cl
 End
 
 val _ = (next_ml_names := ["compiler_has_repl_flag"]);

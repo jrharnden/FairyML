@@ -19,9 +19,6 @@
 cake-x64-64.tar.gz
 config_enc_str.txt
 
-# Generated out files
-compiler/bootstrap/compilation/x64/64/candle.out
-
 # Developer generated executables
 developers/readme_gen
 semantics/addancs

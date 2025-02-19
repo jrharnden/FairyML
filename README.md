@@ -33,10 +33,6 @@ similar to the standard basis library of SML.
 [build-instructions.sh](build-instructions.sh):
 This file describes how to install Poly/ML, HOL and CakeML.
 
-[candle](candle):
-Verification of a HOL theorem prover, based on HOL Light
-(http://www.cl.cam.ac.uk/~jrh13/hol-light/), implemented in CakeML.
-
 [characteristic](characteristic):
 A verified CakeML adaption of Arthur Charguéraud's "Characteristic
 Formulae for the Verification of Imperative Programs"

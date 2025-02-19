@@ -1,4 +1,4 @@
-INCLUDES = $(CAKEMLDIR)/candle/prover $(CAKEMLDIR)/basis $(CAKEMLDIR)/translator \
+INCLUDES = $(CAKEMLDIR)/basis $(CAKEMLDIR)/translator \
            $(CAKEMLDIR)/compiler/inference $(CAKEMLDIR)/compiler/inference/proofs \
            $(CAKEMLDIR)/compiler/printing \
            $(CAKEMLDIR)/semantics $(CAKEMLDIR)/semantics/proofs \

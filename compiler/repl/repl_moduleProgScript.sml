@@ -38,28 +38,11 @@
 *)
 open preamble
      ml_translatorTheory ml_translatorLib ml_progLib basisFunctionsLib
-     candle_kernelProgTheory cfLib
+     basisProgTheory cfLib
 
 val _ = new_theory"repl_moduleProg";
 
-val _ = translation_extends "candle_kernelProg";
-
-val _ = (append_prog o process_topdecs) `
-  fun pp_type ty =
-    ((case ty of Tyvar _ => () | _ => ());
-     PrettyPrinter.token "<type>");
-  fun pp_hol_type ty =
-    ((case ty of Tyvar _ => () | _ => ());
-     PrettyPrinter.token "<hol_type>");
-  fun pp_term tm =
-    ((case tm of Var _ _ => () | _ => ());
-     PrettyPrinter.token "<term>");
-  fun pp_thm th =
-    (case th of Sequent _ _ =>
-     PrettyPrinter.token "<thm>");
-  fun pp_update up =
-    ((case up of Newaxiom _ => () | _ => ());
-     PrettyPrinter.token "<update>"); `
+val _ = translation_extends "basisProg";
 
 val _ = (append_prog o process_topdecs) ‘exception Interrupt;’;
 
@@ -171,7 +154,7 @@ val _ = (append_prog o process_topdecs) `
   fun init_readNextString () =
     let
       val _ = TextIO.print "Welcome to the CakeML read-eval-print loop.\n"
-      val fname = (if !nextString = "candle" then "candle_boot.ml" else "repl_boot.cml")
+      val fname = "repl_boot.cml"
       val str = charsFrom fname
     in
       (isEOF := False; nextString := String.implode str)
