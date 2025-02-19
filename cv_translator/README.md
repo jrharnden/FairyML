@@ -19,8 +19,5 @@ These use HOL's cv_compute facility.
 [eval_cake_compile_x64Lib.sml](eval_cake_compile_x64Lib.sml):
 Functions for in-logic evaluation of the CakeML compiler for x64.
 
-[fmap_cvScript.sml](fmap_cvScript.sml):
-Set up cv translation of fmaps
-
 [to_data_cvScript.sml](to_data_cvScript.sml):
 Translation of the to_data compiler function.
