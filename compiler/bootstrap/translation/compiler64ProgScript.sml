@@ -411,20 +411,11 @@ Definition parse_cakeml_syntax_def:
   | Failure l _ => INL (strlit "Parsing failed at " ^ locs_to_string input (SOME l))
 End
 
-Definition parse_ocaml_syntax_def:
-  parse_ocaml_syntax input =
-  case caml_parser$run (explode input) of
-  | INR res => INR res
-  | INL (l,err) => INL
-                   (err ^ «\nParsing failed at » ^ locs_to_string input (SOME l))
-End
-
 Definition select_parse_def:
   select_parse cl = parse_cakeml_syntax
 End
 
 val r = translate parse_cakeml_syntax_def;
-val r = translate parse_ocaml_syntax_def;
 val _ = (next_ml_names := ["select_parse"]);
 val r = translate select_parse_def;
 

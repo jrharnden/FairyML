@@ -3,7 +3,7 @@ INCLUDES = $(HOLDIR)/examples/formal-languages/context-free\
 	   $(CAKEMLDIR)/basis\
 	   $(CAKEMLDIR)/characteristic\
 	   $(CAKEMLDIR)/translator $(CAKEMLDIR)/translator/monadic\
-           ../../inference ../../parsing ../../parsing/ocaml ../../repl\
+           ../../inference ../../parsing ../../repl\
 	   ../../backend ../.. ../../backend/reg_alloc ../../backend/serialiser ../../backend/reg_alloc/proofs ../../encoders/monadic_enc\
 	   ../../encoders/x64   ../../backend/x64 $(HOLDIR)/examples/l3-machine-code/x64/model
 

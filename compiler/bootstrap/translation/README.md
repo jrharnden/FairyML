@@ -7,12 +7,6 @@ the original shallow embedding.
 [basis_defProgScript.sml](basis_defProgScript.sml):
 Translate the basis library term.
 
-[caml_lexProgScript.sml](caml_lexProgScript.sml):
-Translation of the OCaml lexer.
-
-[caml_parserProgScript.sml](caml_parserProgScript.sml):
-Translation of the functions in caml_parserScript.sml
-
 [compiler64ProgScript.sml](compiler64ProgScript.sml):
 Finish translation of the 64-bit version of the compiler.
 

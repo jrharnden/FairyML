@@ -17,8 +17,6 @@ to_bvi
 to_data
 lexer
 parser
-caml_lexer
-caml_parser
 reg_alloc
 infer
 explorer

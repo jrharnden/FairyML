@@ -42,7 +42,6 @@ compiler/encoders/tests
 compiler/encoders/monadic_enc
 compiler/backend/x64
 compiler/backend/pattern_matching
-compiler/parsing/ocaml
 compiler/printing
 
 # compiler verification
