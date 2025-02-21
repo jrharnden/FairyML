@@ -4,6 +4,7 @@
 open preamble
 open reg_allocTheory reg_allocProofTheory state_transformerTheory
 open ml_monad_translatorLib ml_translatorTheory;
+open parserProgTheory;
 
 (*
 open basisProgTheory

@@ -3,7 +3,7 @@
 *)
 
 open preamble ml_translatorLib ml_translatorTheory;
-open basis;
+open decodeProgTheory basis;
 
 val _ = new_theory "basis_defProg";
 
