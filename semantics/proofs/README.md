@@ -4,6 +4,9 @@ Theorems about CakeML's syntax and semantics.
 Basic properties of the AST.
 TODO: delete this theory (it has no content)
 
+[ast_extrasScript.sml](ast_extrasScript.sml):
+Useful predicates on the CakeML ast.
+
 [cmlPtreeConversionPropsScript.sml](cmlPtreeConversionPropsScript.sml):
 Definition of a function for mapping types back to ASTs, and proofs that
 check that the conversion functions are doing something reasonable.
