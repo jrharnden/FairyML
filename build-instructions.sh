@@ -43,7 +43,7 @@ bin/build
 ## note: a full build (including the bootstrapped compiler)
 ## takes a long time (~20 hours) and requires much RAM (~16 GB)
 cd
-git clone https://github.com/CakeML/cakeml
+git clone https://github.com/jrharnden/cakeml
 cd cakeml
 ## optionally switch to a released version, e.g., version2
 # git checkout version2
