@@ -1,5 +1,7 @@
-The CakeML project: https://cakeml.org
+FairyML is forked from The CakeML project: https://cakeml.org
 ======================================
+
+The objective of FairyML is to slim down CakeML to just the compiler and repl for ease of understanding and quicker building.
 
 CakeML is a verified implementation of a significant subset of
 Standard ML.
