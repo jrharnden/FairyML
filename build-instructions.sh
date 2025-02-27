@@ -21,7 +21,6 @@ cd polyml
 ## if necessary, put <dir>/bin in your PATH
 # export PATH=<dir>/bin:$PATH
 make
-make compiler
 make install
 
 ## build HOL
@@ -39,11 +38,11 @@ bin/build
 ## optionally put $HOLDIR/bin in your PATH
 # export PATH=$HOLDIR/bin:$PATH
 
-## build CakeML
+## build FairyML
 ## note: a full build (including the bootstrapped compiler)
 ## takes a long time (~20 hours) and requires much RAM (~16 GB)
 cd
-git clone https://github.com/jrharnden/cakeml
+git clone https://github.com/jrharnden/FairyML
 cd cakeml
 ## optionally switch to a released version, e.g., version2
 # git checkout version2
