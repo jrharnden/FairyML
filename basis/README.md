@@ -38,7 +38,7 @@ Module about the built-in integer type. Note that CakeML uses
 arbitrary precision integers (the mathematical intergers).
 
 [ListProgScript.sml](ListProgScript.sml):
-Module about the built-in list tyoe.
+Module about the built-in list type.
 
 [ListProofScript.sml](ListProofScript.sml):
 Proofs about the module about the list type.
