@@ -1,5 +1,5 @@
 (*
-  Module about the built-in list tyoe.
+  Module about the built-in list type.
 *)
 open preamble ml_translatorLib ml_progLib cfLib std_preludeTheory
 open mllistTheory ml_translatorTheory OptionProgTheory
