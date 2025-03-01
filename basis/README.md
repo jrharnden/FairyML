@@ -41,7 +41,7 @@ arbitrary precision integers (the mathematical intergers).
 Module about the built-in list tyoe.
 
 [ListProofScript.sml](ListProofScript.sml):
-Proofs about the module about the list tyoe.
+Proofs about the module about the list type.
 
 [MapProgScript.sml](MapProgScript.sml):
 This module contains CakeML code implementing a functional map type
