@@ -44,6 +44,35 @@ val _ = new_theory"repl_moduleProg";
 
 val _ = translation_extends "basisProg";
 
+Datatype:
+  type
+  = Tyvar mlstring
+  | Tyapp mlstring (type list)
+End
+
+Datatype:
+  term = Var mlstring type
+       | Const mlstring type
+       | Comb term term
+       | Abs term term
+End
+
+Datatype:
+  hol_exn = Failure mlstring | Clash term
+End
+
+val _ = register_type “:type”;
+val _ = register_type “:term”;
+val _ = register_exn_type ``:hol_exn``;
+
+val _ = (append_prog o process_topdecs) `
+  fun pp_type ty =
+    ((case ty of Tyvar _ => () | _ => ());
+     PrettyPrinter.token "<type>");
+  fun pp_term tm =
+    ((case tm of Var _ _ => () | _ => ());
+     PrettyPrinter.token "<term>"); `
+
 val _ = (append_prog o process_topdecs) ‘exception Interrupt;’;
 
 val _ = ml_prog_update (open_module "Interrupt");
