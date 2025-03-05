@@ -235,7 +235,6 @@ val _ = cv_auto_trans backend_enc_decTheory.word_to_word_config_enc_def;
 val _ = cv_auto_trans backend_enc_decTheory.word_to_stack_config_enc_def;
 val _ = cv_auto_trans backend_enc_decTheory.stack_to_lab_config_enc_def;
 val _ = cv_auto_trans backend_enc_decTheory.lab_to_target_inc_config_enc_def;
-val _ = cv_auto_trans backend_enc_decTheory.tap_config_enc_def;
 
 (* environment encoding *)
 

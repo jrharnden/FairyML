@@ -85,14 +85,6 @@ Proof
   \\ rfs[DISJOINT_SYM]
 QED
 
-Theorem compile_tap_compile:
-  ∀conf p res td.
-    backend_passes$compile_tap conf p = (res,td) ⇒
-    backend$compile conf p = res
-Proof
-  metis_tac [backend_passesTheory.compile_alt,FST]
-QED
-
 Definition read_limits_def:
   read_limits cc mc ms = backendProof$read_limits cc.backend_config mc ms
 End
@@ -146,7 +138,6 @@ Proof
   \\ simp[semantics_def]
   \\ rpt (BasicProvers.CASE_TAC \\ simp[])
   \\ fs[]
-  \\ drule compile_tap_compile
   \\ rpt strip_tac
   \\ (backendProofTheory.compile_correct'
       |> SIMP_RULE std_ss [LET_THM,UNCURRY]

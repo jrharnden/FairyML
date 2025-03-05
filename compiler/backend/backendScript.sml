@@ -17,7 +17,7 @@ open preamble
      lab_to_targetTheory
 local open primTypesTheory in end
 open word_to_wordTheory
-open jsonLangTheory presLangTheory
+open jsonLangTheory
 
 val _ = new_theory"backend";
 
@@ -32,7 +32,6 @@ Datatype:
    ; stack_conf : stack_to_lab$config
    ; lab_conf : 'a lab_to_target$config
    ; symbols : (mlstring # num # num) list
-   ; tap_conf : tap_config
    ; exported : mlstring list (* field for Pancake entry points - empty for CakeML *)
    |>
 End
@@ -648,7 +647,6 @@ Datatype:
    ; inc_stack_conf : stack_to_lab$config
    ; inc_lab_conf : lab_to_target$inc_config
    ; inc_symbols : (mlstring # num # num) list
-   ; inc_tap_conf : tap_config
    ; inc_exported : mlstring list
    |>
 End
@@ -664,7 +662,6 @@ Definition config_to_inc_config_def:
    ; inc_stack_conf := c.stack_conf
    ; inc_lab_conf := lab_to_target$config_to_inc_config c.lab_conf
    ; inc_symbols := c.symbols
-   ; inc_tap_conf := c.tap_conf
    ; inc_exported := c.exported
    |>
 End
@@ -680,7 +677,6 @@ Definition inc_config_to_config_def:
    ; stack_conf := c.inc_stack_conf
    ; lab_conf := lab_to_target$inc_config_to_config asm_c c.inc_lab_conf
    ; symbols := c.inc_symbols
-   ; tap_conf := c.inc_tap_conf
    ; exported := c.inc_exported
    |>
 End

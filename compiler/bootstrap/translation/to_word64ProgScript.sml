@@ -668,32 +668,6 @@ val _ = translate stack_removeTheory.stub_names_def
 val res = translate (data_to_wordTheory.compile_def
                      |> SIMP_RULE std_ss [data_to_wordTheory.stubs_def] |> conv64_RHS);
 
-
-(* explorer specific functions *)
-
-val _ = ml_translatorLib.use_string_type false;
-val r = presLangTheory.num_to_hex_def |> translate;
-val r = presLangTheory.word_to_display_def |> conv64 |> translate;
-val r = presLangTheory.item_with_word_def |> conv64 |> translate;
-val r = presLangTheory.asm_binop_to_display_def |> translate;
-val r = presLangTheory.asm_reg_imm_to_display_def |> conv64 |> translate;
-val r = presLangTheory.asm_arith_to_display_def |> conv64 |> translate;
-val r = presLangTheory.word_to_display_def |> INST_TYPE [“:'a”|->“:5”] |> translate
-val r = presLangTheory.item_with_word_def |> INST_TYPE [“:'a”|->“:5”] |> translate
-val r = presLangTheory.store_name_to_display_def |> conv64 |> translate
-val r = presLangTheory.word_exp_to_display_def |> conv64 |> translate
-val r = presLangTheory.asm_inst_to_display_def |> conv64 |> translate;
-val r = presLangTheory.ws_to_display_def |> conv64 |> translate
-val r = presLangTheory.word_seqs_def |> conv64 |> translate
-
-val _ = ml_translatorLib.use_string_type true;
-val r = presLangTheory.word_prog_to_display_def
-          |> conv64
-          |> REWRITE_RULE [presLangTheory.string_imp_def]
-          |> translate
-
-val r = presLangTheory.word_fun_to_display_def |> conv64 |> translate
-
 val () = Feedback.set_trace "TheoryPP.include_docs" 0;
 
 val _ = ml_translatorLib.ml_prog_update (ml_progLib.close_module NONE);

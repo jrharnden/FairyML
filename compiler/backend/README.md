@@ -8,10 +8,6 @@ to the front-end, i.e. parsing and type inference.
 [backend_commonScript.sml](backend_commonScript.sml):
 Definitions that are common for many parts of the compiler backend.
 
-[backend_passesScript.sml](backend_passesScript.sml):
-Reformulates compile definition to expose the result of each internal
-compiler pass
-
 [bviScript.sml](bviScript.sml):
 The BVI intermediate language. This language is very similar to BVL.
 One of the more notable differences is that exception handling is
@@ -221,13 +217,6 @@ compiler configuration.
 
 [pattern_matching](pattern_matching):
 The CakeML pattern matching expressions compiler
-
-[presLangLib.sml](presLangLib.sml):
-Library that helps pretty print code
-
-[presLangScript.sml](presLangScript.sml):
-Functions for converting various intermediate languages
-into displayLang representations.
 
 [proofs](proofs):
 This directory contains the correctness proofs for all of the

@@ -16,9 +16,6 @@ Translation of CakeML source AST
 [decodeProgScript.sml](decodeProgScript.sml):
 Translate the compiler's state decoder.
 
-[explorerProgScript.sml](explorerProgScript.sml):
-Translate the compiler explorer parts of the compiler.
-
 [inferProgScript.sml](inferProgScript.sml):
 Translate the compiler's type inferencer.
 

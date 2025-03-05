@@ -56,7 +56,6 @@ Definition x64_backend_config_def:
                stack_conf:=^(x64_stack_conf);
                lab_conf:=^(x64_lab_conf);
                symbols:=[];
-               tap_conf:=default_tap_config;
                exported:=[]
                |>
 End

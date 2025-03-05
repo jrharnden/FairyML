@@ -15,14 +15,12 @@ type arch_thms =
   , to_livesets_def          : thm
   , compile_cake_def         : thm
   , compile_cake_imp         : thm
-  , compile_cake_explore_def : thm
   , cv_export_def            : thm }
 
 type comp_input =
   { prefix               : string
   , conf_def             : thm
   , prog_def             : thm
-  , run_as_explorer      : bool
   , output_filename      : string
   , output_conf_filename : string option }
 
@@ -52,9 +50,9 @@ fun eval_cake_compile_general (arch : arch_thms) (input : comp_input) = let
   val _ = (cv_memLib.verbosity_level := cv_memLib.Verbose)
   fun report s = print (String.concat ["eval_cake: ", s, " --- ",
                     Date.toString (Date.fromTimeLocal (Time.now())),"\n"])
-  val { prefix, conf_def, prog_def, run_as_explorer
+  val { prefix, conf_def, prog_def
       , output_filename , output_conf_filename } = input
-  val { default_config_def, default_config_simp, to_livesets_def, compile_cake_explore_def
+  val { default_config_def, default_config_simp, to_livesets_def
       , compile_cake_def, compile_cake_imp, cv_export_def } = arch
   fun define_abbrev name tm =
     Feedback.trace ("Theory.allow_rebinds", 1)
@@ -86,7 +84,7 @@ fun eval_cake_compile_general (arch : arch_thms) (input : comp_input) = let
   val c_oracle_tm = backendTheory.inc_set_oracle_def
                       |> SPEC (c |> concl |> rhs)
                       |> SPEC oracle_tm |> concl |> lhs
-  val def = if run_as_explorer then compile_cake_explore_def else compile_cake_def
+  val def = compile_cake_def
   val input_tm = def |> GEN_ALL
     |> SPEC (prog_def |> concl |> lhs)
     |> SPEC c_oracle_tm |> concl |> lhs
@@ -95,11 +93,6 @@ fun eval_cake_compile_general (arch : arch_thms) (input : comp_input) = let
   val _ = report "about to run cv_eval_raw on complie_cake_def"
   val th1 = cv_eval_raw input_tm
             |> CONV_RULE (PATH_CONV "lr" (REWRITE_CONV [GSYM c]))
-  val _ =
-    if not run_as_explorer then () else let
-      val tm = th1 |> concl |> rhs |> rand |> rand
-      val _ = write_cv_char_list_to_file output_filename tm
-      in raise EarlyReturn end
   val _ = report "cv_eval_raw complie_cake_def finished"
   val th2 = th1 |> CONV_RULE (PATH_CONV "r" (REWR_CONV to_option_some))
             handle HOL_ERR _ => failwith "compiler returned NONE"
@@ -181,37 +174,12 @@ fun eval_cake_compile_with_conf arch prefix conf_def prog_def filename =
     { prefix               = prefix
     , conf_def             = conf_def
     , prog_def             = prog_def
-    , run_as_explorer      = false
     , output_filename      = filename
     , output_conf_filename = NONE };
 
 fun eval_cake_compile arch prefix =
   eval_cake_compile_with_conf arch prefix (#default_config_def arch);
 
-fun eval_cake_compile_explore_with_conf arch prefix conf_def prog_def filename =
-  eval_cake_compile_general arch
-    { prefix               = prefix
-    , conf_def             = conf_def
-    , prog_def             = prog_def
-    , run_as_explorer      = true
-    , output_filename      = filename
-    , output_conf_filename = NONE };
-
-fun eval_cake_compile_explore arch prefix =
-  eval_cake_compile_explore_with_conf arch prefix (#default_config_def arch);
-
 val _ = Feedback.set_trace "TheoryPP.include_docs" 0;
-
-(* --- for debugging ---
-   val _ = (max_print_depth := 15);
-   val arch = x64_arch_thms;
-   val input =
-       { prefix               = "x64_"
-       , conf_def             = #default_config_def x64_arch_thms
-       , prog_def             = Define `prog = [] : ast$dec list`
-       , run_as_explorer      = true
-       , output_filename      = "test.S"
-       , output_conf_filename = SOME "test_conf.txt" } : comp_input;
-*)
 
 end

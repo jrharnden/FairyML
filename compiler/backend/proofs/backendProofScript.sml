@@ -15,7 +15,7 @@ open preamble primSemEnvTheory semanticsPropsTheory
      lab_to_targetProofTheory
      backend_commonTheory
      backendPropsTheory
-local open dataPropsTheory finite_mapSyntax backend_passesTheory in end
+local open dataPropsTheory finite_mapSyntax in end
 open word_to_stackTheory
 
 val _ = new_theory"backendProof";
@@ -55,8 +55,6 @@ Proof
 QED
 
 (* -- *)
-
-val compile_tap_def = backend_passesTheory.compile_tap_def;
 
 Theorem backend_upper_w2w[simp]:
   backend$upper_w2w = data_to_word_gcProof$upper_w2w
@@ -437,7 +435,7 @@ Proof
   \\ TRY (gen_tac \\ pop_assum kall_tac)
   \\ rpt gen_tac
   \\ fs [compile_inc_progs_def, backendTheory.compile_def,
-            compile_tap_def, clos_to_bvlTheory.compile_def,
+            clos_to_bvlTheory.compile_def,
             clos_to_bvlTheory.compile_common_def,
             clos_to_bvlTheory.clos_to_bvl_compile_inc_def, lab_to_targetTheory.compile_def,
             bvl_to_bviTheory.bvl_to_bvi_compile_inc_all_def ]
@@ -895,7 +893,7 @@ Theorem configs_nn2_MOD_namespaces_ok:
   compile c prog = SOME (b, bm, c') /\ backend_config_ok c ==>
   c'.bvl_conf.next_name2 MOD bvl_to_bvi_namespaces = 2
 Proof
-  fs [backendTheory.compile_def, compile_tap_def, bvl_to_bviTheory.compile_def]
+  fs [backendTheory.compile_def, bvl_to_bviTheory.compile_def]
   \\ rpt (pairarg_tac \\ fs [])
   \\ rw []
   \\ drule_then assume_tac attach_bitmaps_SOME
@@ -937,7 +935,7 @@ Proof
     mp_tac configs_nn2_MULT_namespaces
     \\ rw [] \\ fs []
   )
-  \\ fs [backendTheory.compile_def, compile_tap_def, bvl_to_bviTheory.compile_def]
+  \\ fs [backendTheory.compile_def, bvl_to_bviTheory.compile_def]
   \\ rpt (pairarg_tac \\ fs [])
   \\ drule_then assume_tac attach_bitmaps_SOME
   \\ rveq \\ fs []
@@ -1197,7 +1195,7 @@ Proof
   \\ simp [ETA_THM]
   \\ drule_then irule bvl_to_bvi_compile_inc_all_DISTINCT
   \\ simp [configs_nn2_MOD_namespaces]
-  \\ fs [backendTheory.compile_def, compile_tap_def, bvl_to_bviTheory.compile_def]
+  \\ fs [backendTheory.compile_def, bvl_to_bviTheory.compile_def]
   \\ rpt (pairarg_tac \\ fs [])
   \\ drule attach_bitmaps_SOME
   \\ drule bvi_tailrecProofTheory.compile_prog_next_mono
@@ -1718,7 +1716,7 @@ Proof
   \\ conj_tac >- (
     fs []
     \\ drule_then drule to_lab_labels_ok
-    \\ fs [backendTheory.compile_def, compile_tap_def]
+    \\ fs [backendTheory.compile_def]
     \\ rpt (pairarg_tac \\ fs [])
     \\ drule_then strip_assume_tac attach_bitmaps_SOME
     \\ simp [to_stack_def, to_word_def, to_data_def, to_bvi_def, to_bvl_def,
@@ -1893,7 +1891,7 @@ Proof
     )
     \\ rw []
     \\ TRY (qpat_x_assum `_ < SUC _` mp_tac \\ EVAL_TAC \\ simp [])
-    \\ fs [backendTheory.compile_def, compile_tap_def,
+    \\ fs [backendTheory.compile_def,
           to_bvi_def, to_bvl_def, to_clos_def, to_flat_def,
           bvl_to_bviTheory.compile_def]
     \\ rpt (pairarg_tac \\ fs [])
@@ -1939,7 +1937,7 @@ Proof
     )
     \\ simp [FST_state_co, pred_setTheory.IN_PREIMAGE, cake_orac_0,
             config_tuple2_def]
-    \\ fs [backendTheory.compile_def, compile_tap_def,
+    \\ fs [backendTheory.compile_def,
           to_bvi_def, to_bvl_def, to_clos_def, to_flat_def,
           bvl_to_bviTheory.compile_def]
     \\ rpt (pairarg_tac \\ fs [])
@@ -1978,7 +1976,6 @@ Proof
   rw []
   \\ qpat_assum `_ = SOME _`
     (assume_tac o REWRITE_RULE [backendTheory.compile_def])
-  \\ fs [compile_tap_def]
   \\ rpt (pairarg_tac \\ fs [])
   \\ drule attach_bitmaps_SOME
   \\ rw []
@@ -2378,7 +2375,7 @@ Theorem compile_word_conf_eq:
     (to_stack c prog = (bm, w_conf,stack_prog,stack_names))
     ⇒ conf.word_conf.stack_frame_size = w_conf.word_conf.stack_frame_size
 Proof
-  srw_tac[][FUN_EQ_THM,backendTheory.compile_def,compile_tap_def,
+  srw_tac[][FUN_EQ_THM,backendTheory.compile_def,
      to_target_def,
      to_lab_def,
      to_stack_def,
@@ -2391,7 +2388,7 @@ Proof
   \\ unabbrev_all_tac
   \\ rpt (CHANGED_TAC (srw_tac[][] >> full_simp_tac(srw_ss())[] >> srw_tac[][] >> rev_full_simp_tac(srw_ss())[]))
   \\ rpt (pairarg_tac \\ fs []) \\ rveq \\ rfs []
-  \\ fs [backendTheory.compile_def,compile_tap_def
+  \\ fs [backendTheory.compile_def,
         ,compute_stack_frame_sizes_thm
         ,to_word_def,to_data_def]
   \\ rpt (pairarg_tac \\ fs []) \\ rveq \\ fs [] \\ rveq \\ rfs [] \\ rveq
@@ -2406,7 +2403,7 @@ Theorem to_word_lab_conf:
     (to_word c prog = (c',p,n))
     ⇒ c.lab_conf = c'.lab_conf
 Proof
-  srw_tac[][FUN_EQ_THM,backendTheory.compile_def,compile_tap_def,
+  srw_tac[][FUN_EQ_THM,backendTheory.compile_def,
      to_word_def,
      to_data_def,
      to_bvi_def,
@@ -2415,7 +2412,7 @@ Proof
      to_flat_def]
   \\ rpt (CHANGED_TAC (srw_tac[][] >> full_simp_tac(srw_ss())[] >> srw_tac[][] >> rev_full_simp_tac(srw_ss())[]))
   \\ rpt (pairarg_tac \\ fs []) \\ rveq \\ rfs []
-  \\ fs [backendTheory.compile_def,compile_tap_def
+  \\ fs [backendTheory.compile_def
         ,compute_stack_frame_sizes_thm
         ,to_word_def,to_data_def]
   \\ rpt (pairarg_tac \\ fs []) \\ rveq \\ fs [] \\ rveq \\ rfs [] \\ rveq
@@ -3115,7 +3112,7 @@ Proof
     \\ simp [source_to_flatProofTheory.src_orac_next_cfg_inner_def, cake_orac_0]
     \\ imp_res_tac config_wf_abs_conc
     \\ simp [config_tuple1_def, inc_config_to_config_inv]
-    \\ fs [backendTheory.compile_def, compile_tap_def, source_to_flatTheory.compile_def]
+    \\ fs [backendTheory.compile_def, source_to_flatTheory.compile_def]
     \\ rpt (pairarg_tac \\ fs [])
     \\ imp_res_tac attach_bitmaps_SOME
     \\ fs [Q.ISPEC `compile_prog _.source_conf _` PAIR_FST_SND_EQ]

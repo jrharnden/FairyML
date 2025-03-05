@@ -203,7 +203,6 @@ val res = define_enc_dec “:fp_top”
 val res = define_enc_dec “:const_part”
 val res = define_enc_dec “:closLang$op”
 val res = define_enc_dec “:gc_kind”
-val res = define_enc_dec “:tap_config”
 
 (* closLang's exp *)
 

@@ -3,11 +3,11 @@
 *)
 open preamble basisFunctionsLib
      num_list_enc_decTheory num_tree_enc_decTheory backend_enc_decTheory
-     explorerProgTheory ml_translatorLib ml_translatorTheory cfLib
+     inferProgTheory ml_translatorLib ml_translatorTheory cfLib
 
 val _ = new_theory "decodeProg"
 
-val _ = translation_extends "explorerProg";
+val _ = translation_extends "inferProg";
 
 val _ = ml_translatorLib.ml_prog_update (ml_progLib.open_module "decodeProg");
 val _ = ml_translatorLib.use_sub_check true;
@@ -184,8 +184,6 @@ val res = translate word_to_word_config_dec_def;
 val res = translate (word_to_stack_config_dec_def |> INST_TYPE [alpha|->“:64”]);
 val res = translate stack_to_lab_config_dec_def;
 
-val res = translate tap_config_dec'_def;
-val res = translate tap_config_dec_def;
 
 val res = translate (closLang_op_dec'_def |> DefnBase.one_line_ify NONE);
 

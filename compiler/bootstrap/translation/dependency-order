@@ -19,7 +19,6 @@ lexer
 parser
 reg_alloc
 infer
-explorer
 decode
 basis_def
 printing

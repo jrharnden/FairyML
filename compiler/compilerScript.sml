@@ -8,7 +8,7 @@ open preamble
      lexer_funTheory lexer_implTheory
      cmlParseTheory
      inferTheory
-     backendTheory backend_passesTheory
+     backendTheory
      mlintTheory mlstringTheory basisProgTheory
 
 open x64_configTheory export_x64Theory
@@ -65,8 +65,6 @@ OPTIONS:
                 default is false; true will make the compiler skip
                 type inference. There are no gurantees of safety if
                 the type inferencer is skipped.
-
-  --explore     outputs intermediate forms of the compiled program
 
   --main_return=B   here B can be either true or false; the default is
                 false; setting this to true causes the main function to
@@ -217,31 +215,19 @@ End
 Definition compile_def:
   compile c prelude input =
     let _ = empty_ffi (strlit "finished: start up") in
-    case
-      parse_cml_input input
-    of
-    | INL msg => (Failure (ParseError msg), Nil)
+    case parse_cml_input input of
+    | INL msg => Failure (ParseError msg)
     | INR prog =>
-       let _ = empty_ffi (strlit "finished: lexing and parsing") in
-       let full_prog = if c.exclude_prelude then prog else prelude ++ prog in
-       case
-         if c.skip_type_inference
-         then Success c.inferencer_config
-         else infertype_prog c.inferencer_config full_prog
-       of
-       | Failure (locs, msg) =>
-           (Failure (TypeError (concat [msg; implode " at ";
-               locs_to_string (implode input) locs])), Nil)
-       | Success ic =>
-          let _ = empty_ffi (strlit "finished: type inference") in
-          if c.only_print_types then
-            (Failure (TypeError (concat ([strlit "\n"] ++
-                                         inf_env_to_types_string ic ++
-                                         [strlit "\n"]))), Nil)
-          else
-          case backend_passes$compile_tap c.backend_config full_prog of
-          | (NONE, td) => (Failure AssembleError, td)
-          | (SOME (bytes,data,c), td) => (Success (bytes,data,c), td)
+        let _ = empty_ffi (strlit "finished: lexing and parsing") in
+        let full_prog = prelude ++ prog in
+        case infertype_prog c.inferencer_config full_prog of
+        | Failure (locs, msg) => Failure (TypeError (concat [msg; implode " at "; locs_to_string (implode input) locs]))
+        | Success ic =>
+            let _ = empty_ffi (strlit "finished: type inference") in
+            case backend$compile c.backend_config full_prog of
+            | NONE => Failure (AssembleError)
+            | SOME (bytes,data,c) => Success (bytes,data,c)
+
 End
 
 (* The top-level compiler *)
@@ -502,12 +488,6 @@ Definition parse_stack_conf_def:
   | INR s => INR s
 End
 
-(* tap *)
-Definition parse_tap_conf_def:
-  parse_tap_conf ls stack =
-    INL (<| explore_flag := MEMBER (strlit"--explore") ls |>)
-End
-
 (* lab *)
 Definition parse_lab_conf_def:
   parse_lab_conf ls lab =
@@ -524,17 +504,15 @@ Definition extend_conf_def:
   let wtw = parse_wtw_conf ls conf.word_to_word_conf in
   let data = parse_data_conf ls conf.data_conf in
   let stack = parse_stack_conf ls conf.stack_conf in
-  let tap = parse_tap_conf ls conf.tap_conf in
   let lab = parse_lab_conf ls conf.lab_conf in
-  case (clos,bvl,wtw,data,stack,tap,lab) of
-    (INL clos,INL bvl,INL wtw,INL data,INL stack,INL tap, INL lab) =>
+  case (clos,bvl,wtw,data,stack,lab) of
+    (INL clos,INL bvl,INL wtw,INL data,INL stack, INL lab) =>
       INL (conf with
         <|clos_conf         := clos;
           bvl_conf          := bvl;
           word_to_word_conf := wtw;
           data_conf         := data;
           stack_conf        := stack;
-          tap_conf          := tap;
           lab_conf          := lab|>)
     | _ =>
       INR (concat [get_err_str clos;
@@ -542,7 +520,6 @@ Definition extend_conf_def:
                get_err_str wtw;
                get_err_str data;
                get_err_str stack;
-               get_err_str tap;
                get_err_str lab])
 End
 
@@ -589,44 +566,30 @@ Definition format_compiler_result_def:
     (bytes_export (the [] c.lab_conf.ffi_names) bytes data, implode "")
 End
 
-(* FIXME TODO: this is an awful workaround to avoid implementing a file writer
-   right now. *)
-Definition add_tap_output_def:
-  add_tap_output td out =
-    if td = Nil then out else td :mlstring app_list
-End
-
 (* The top-level compiler with everything instantiated except it doesn't do exporting *)
 
 (* The top-level compiler with almost everything instantiated except the top-level configuration *)
 Definition compile_64_def:
   compile_64 cl input =
-  let confexp = parse_target_64 cl in
-  let topconf = parse_top_config cl in
-  case (confexp,topconf) of
-    (INL (conf,export), INL(prelude,typeinfer,onlyprinttypes,mainret)) =>
-    (let ext_conf = extend_conf cl conf in
-    case ext_conf of
-      INL ext_conf =>
-        let compiler_conf =
-          <| inferencer_config   := init_config;
-             backend_config      := ext_conf;
-             exclude_prelude     := prelude;
-             skip_type_inference := typeinfer;
-             only_print_types    := onlyprinttypes;
-             |> in
-        (case compiler$compile compiler_conf basis input of
-          (Success (bytes,data,c), td) =>
-            (add_tap_output td (export
-              (ffinames_to_string_list
-                $ the [] c.lab_conf.ffi_names)
-                bytes data c.symbols c.exported mainret F),
-              implode "")
-        | (Failure err, td) => (add_tap_output td (List []), error_to_str err))
-    | INR err =>
-    (List[], error_to_str (ConfigError (get_err_str ext_conf))))
-  | _ =>
-    (List[], error_to_str (ConfigError (concat [get_err_str confexp;get_err_str topconf])))
+    let confexp = parse_target_64 cl in
+    let topconf = parse_top_config cl in
+    case (confexp, topconf) of
+    | (INL (conf, export), INL (prelude, typeinfer, onlyprinttypes, mainret)) =>
+        (let ext_conf = extend_conf cl conf in
+        case ext_conf of
+        | INL ext_conf =>
+            let compiler_conf =
+            <| inferencer_config   := init_config;
+               backend_config      := ext_conf;
+               exclude_prelude     := prelude;
+               skip_type_inference := typeinfer;
+               only_print_types    := onlyprinttypes;
+            |> in
+            (case compiler$compile compiler_conf basis input of
+            | Success (bytes,data,c) => ((export (ffinames_to_string_list $ the [] c.lab_conf.ffi_names) bytes data c.symbols c.exported mainret F), implode "")
+            | Failure err => (List[], error_to_str err))
+        | INR err => (List [], error_to_str (ConfigError (get_err_str ext_conf))))
+    | _ => (List [], error_to_str (ConfigError (concat [get_err_str confexp;get_err_str topconf])))
 End
 
 Definition full_compile_64_def:

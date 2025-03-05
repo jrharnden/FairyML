@@ -42,8 +42,6 @@ Proof
   rw[FUN_EQ_THM] \\ EVAL_TAC
 QED
 
-val r = translate presLangTheory.default_tap_config_def;
-
 val def = spec64
           (backendTheory.attach_bitmaps_def
              |> Q.GENL[`c'`,`bytes`,`c`]
@@ -56,59 +54,9 @@ val def = spec64 backendTheory.compile_def
 
 val res = translate def
 
-val _ = register_type “:64 any_prog”
-
-val r = backend_passesTheory.to_flat_all_def |> spec64 |> translate;
-val r = backend_passesTheory.to_clos_all_def |> spec64 |> translate;
-val r = backend_passesTheory.to_bvl_all_def |> spec64 |> translate;
-val r = backend_passesTheory.to_bvi_all_def |> spec64 |> translate;
-
-Triviality backend_passes_to_bvi_all_side:
-  backend_passes_to_bvi_all_side c p
-Proof
-  fs [fetch "-" "backend_passes_to_bvi_all_side_def"]
-  \\ rewrite_tac [GSYM LENGTH_NIL,bvl_inlineTheory.LENGTH_remove_ticks]
-  \\ fs []
-QED
-
-val _ = update_precondition backend_passes_to_bvi_all_side
-
-val r = backend_passesTheory.to_data_all_def |> spec64 |> translate;
-
-val r = backend_passesTheory.word_internal_def |> spec64 |> translate;
-
-val r = backend_passesTheory.to_word_all_def |> spec64
-          |> REWRITE_RULE [data_to_wordTheory.stubs_def,APPEND] |> translate;
-
-val r = backend_passesTheory.to_stack_all_def |> spec64
-          |> REWRITE_RULE[max_heap_limit_64_thm] |> translate;
-
-val r = backend_passesTheory.to_lab_all_def |> spec64
-          |> REWRITE_RULE[max_heap_limit_64_thm] |> translate;
-
-val r = backend_passesTheory.to_target_all_def |> spec64 |> translate;
-
-val r = backend_passesTheory.from_lab_all_def |> spec64 |> translate;
-
-val r = backend_passesTheory.from_stack_all_def |> spec64
-          |> REWRITE_RULE[max_heap_limit_64_thm] |> translate;
-
-val r = backend_passesTheory.from_word_all_def |> spec64 |> translate;
-
-val r = backend_passesTheory.from_word_0_all_def |> spec64
-          |> REWRITE_RULE[max_heap_limit_64_thm] |> translate;
-
-val r = presLangTheory.word_to_strs_def |> spec64 |> translate
-val r = presLangTheory.stack_to_strs_def |> spec64 |> translate
-val r = presLangTheory.lab_to_strs_def |> spec64 |> translate
-
-val r = backend_passesTheory.any_prog_pp_def |> spec64 |> translate;
-val r = backend_passesTheory.pp_with_title_def |> translate;
-val r = backend_passesTheory.compile_tap_def |> spec64 |> translate;
-
-val _ = r |> hyp |> null orelse
+val _ = res |> hyp |> null orelse
         failwith ("Unproved side condition in the translation of " ^
-                  "backend_passesTheory.compile_tap_def.");
+                  "backendTheory.compile_def.");
 
 Triviality lem:
   dimindex(:64) = 64
@@ -219,7 +167,6 @@ val res = translate parse_wtw_conf_def;
 val res = translate parse_gc_def;
 val res = translate parse_data_conf_def;
 val res = translate parse_stack_conf_def;
-val res = translate parse_tap_conf_def;
 val res = translate (parse_lab_conf_def |> spec64);
 
 val res = translate (parse_top_config_def |> SIMP_RULE (srw_ss()) []);
@@ -249,7 +196,6 @@ val _ = ml_translatorLib.ml_prog_update (ml_progLib.close_module NONE);
 (* Rest of the translation *)
 val res = translate (extend_conf_def |> spec64 |> SIMP_RULE (srw_ss()) [MEMBER_INTRO]);
 val res = translate parse_target_64_def;
-val res = translate add_tap_output_def;
 
 val res = format_compiler_result_def
             |> Q.GENL[`bytes`,`c`]
